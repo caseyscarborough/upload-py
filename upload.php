@@ -38,7 +38,9 @@
 			<input type="text" name="isbn" placeholder="ISBN-13"><br>
 		</p>
 			Books must be uploaded in PDF Format.<br>
-			<input type="file" name="file" value="Upload Book"><br><br>
+			<input type="file" name="file"><br><br>
+			Images must be uploaded in JPG Format.<br>
+			<input type="file" name="image"><br><br>
 			<input type="submit" value="Submit">
 		</p>
 	</form>
