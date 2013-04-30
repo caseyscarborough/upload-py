@@ -4,7 +4,7 @@ import cgi, os
 import cgitb; cgitb.enable()
 import MySQLdb
 
-print "Content-type: text/html\n\n<html><body>"
+
 
 class Database:
 	def __init__(self, **kwargs):
@@ -22,7 +22,9 @@ class Database:
 	
 	def insert(self, row):
 		query = "INSERT INTO books (title, filename, author, edition, publication_date, isbn) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (row['title'], row['filename'], row['author'], row['edition'], row['publication_date'], row['isbn'])
-		return query
+		cur = self._db.cursor();
+		result = cur.execute(query)
+		return result
 	
 def file_buffer(f, chunk_size=50000):
    while True:
@@ -85,15 +87,15 @@ def main():
 			))
 		
 			if result:
-				print "Location: upload.php?success=1"
-				print result
+				print "Location: ./upload.php?success=1"
 			else:
-		   		print "Location: upload.php?err=0"
+		   	print "Location: ./upload.php?err=0"
 	else:
 		message = 'No file was uploaded'
 		print "Status: 302 Moved"
-		print "Location: upload.php?err=1"
+		print "Location: ./upload.php?err=1"
 	
+	print "Content-type: text/html\n\n<html><body>"
 	print "<p>%s, %s, %s, %s, %s, %s</p></body></html>" % (title, author, edition, pub_date, isbn, message)
 	
 if __name__ == "__main__": main()
