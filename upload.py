@@ -1,18 +1,28 @@
 #!/usr/bin/python
+# filename: upload.py
+#
+# This is a simple CGI script written in Python 2.6 that 
+# is used to connect to a MySQL database, and upload a PDF 
+# file the user specifies to the filesystem. It is used in 
+# conjunction with a HTML form, using POST to send information 
+# to the script to perform the upload and insert into the database.
+#
+# Written by Casey Scarborough - 2013
 
 import cgi, os
 import cgitb; cgitb.enable()
 import MySQLdb
 
-
-
+# Database class used for connecting to the database and insertion
 class Database:
+	# Constructor
 	def __init__(self, **kwargs):
 		self.host = kwargs.get('host')
 		self.user = kwargs.get('user')
 		self.password = kwargs.get('password')
 		self.database = kwargs.get('database')
 		
+		# Connect to the database
 		self._db = MySQLdb.connect(
 			host = self.host,
 			user = self.user,
@@ -20,28 +30,32 @@ class Database:
 			db = self.database
 		)
 	
+	# This method is used to insert into the database
 	def insert(self, row):
 		query = "INSERT INTO books (title, filename, author, edition, publication_date, isbn) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (row['title'], row['filename'], row['author'], row['edition'], row['publication_date'], row['isbn'])
-		cur = self._db.cursor();
-		result = cur.execute(query)
-		return result
-	
+		cur = self._db.cursor(); # Create a cursor
+		result = cur.execute(query) # Execute the query
+		return result # Return the result
+
+# This method is used to read the file in chunks
 def file_buffer(f, chunk_size=50000):
    while True:
       chunk = f.read(chunk_size)
       if not chunk: break
       yield chunk
 
-
+# This method is used to upload the specified file
 def upload_file(file):
 	try:
-		# strip leading path from file name to avoid directory traversal attacks
+		# Strip leading path from filename to avoid directory traversal attacks
 		fn = os.path.basename(file.filename)
+		# Check if the filename ends with .pdf
 		if fn.endswith(".pdf"):
+			# Remove the spaces and open the new file
 			fn = fn.replace(" ", "_")
 			f = open(fn, 'wb', 50000)
 			
-			# Read the file in chunks
+			# Read the file in chunks and write it to the new file
 			for chunk in file_buffer(file.file):
 				f.write(chunk)
 			f.close()
@@ -54,21 +68,27 @@ def upload_file(file):
 	return message, fn
 
 def main():
+	# Get submitted form data
 	form = cgi.FieldStorage()
 	
+	# Set each field to a variable
 	title = form.getfirst('title', 'none')
 	author = form.getfirst('author', 'none')
 	edition = form.getfirst('edition', 'none')
 	pub_date = form.getfirst('pub-date', 'none')
 	isbn = form.getfirst('isbn', 'none')
+	
+	# Create the fn and query variables
 	fn = ''
 	query = ''
 	      
+	# Get the book from the form data
 	book = form['file']
 	
-	if book.filename:
+	if book.filename: # If the book exists
 		message, fn = upload_file(book)
 		
+		# Open a new database connection
 		db = Database(
 			host="localhost",
 			user="casey",
@@ -76,9 +96,10 @@ def main():
 			database="books"
 		)
 		
-		if fn.endswith(".pdf"):
+		if fn.endswith(".pdf"): # If filename ends with pdf
+			# insert into the db
 			result = db.insert(dict(
-				title=title,
+				title=title,  # strip the pdf from the end
 				filename=fn.replace(".pdf", ""),
 				author=author,
 				edition=edition,
@@ -86,16 +107,15 @@ def main():
 				isbn=isbn
 			))
 		
-			if result:
+			if result: # If query executed successfully redirect to success
 				print "Location: ./upload.php?success=1"
-			else:
+			else: # otherwise redirect to error
 		   	print "Location: ./upload.php?err=0"
-	else:
-		message = 'No file was uploaded'
-		print "Status: 302 Moved"
+	else: # If the book doesn't exist redirect to error
 		print "Location: ./upload.php?err=1"
 	
+	# Output some html
 	print "Content-type: text/html\n\n<html><body>"
-	print "<p>%s, %s, %s, %s, %s, %s</p></body></html>" % (title, author, edition, pub_date, isbn, message)
-	
+	print "<p>If you see this message, something went wrong!<br>Click <a href=""./upload.php"">here</a> to return to the upload page.</p></body></html>"
+		
 if __name__ == "__main__": main()
