@@ -45,27 +45,38 @@ def file_buffer(f, chunk_size=50000):
       yield chunk
 
 # This method is used to upload the specified file
-def upload_file(file):
+def upload_book(book):
 	try:
 		# Strip leading path from filename to avoid directory traversal attacks
-		fn = os.path.basename(file.filename)
+		fn = os.path.basename(book.filename)
 		# Check if the filename ends with .pdf
 		if fn.endswith(".pdf"):
 			# Remove the spaces and open the new file
-			fn = fn.replace(" ", "_")
+			fn = fn.replace(" ", ".")
 			f = open(fn, 'wb', 50000)
 			
 			# Read the file in chunks and write it to the new file
-			for chunk in file_buffer(file.file):
+			for chunk in file_buffer(book.file):
 				f.write(chunk)
 			f.close()
 	
-			message = 'The file "' + fn + '" was uploaded successfully'
+			message = 'The file "' + fn + '" was uploaded successfully'	
 		else:
-			message = 'The book must be a PDF file.'
+			message = 'Improper file format.'
 	except:
 		message = 'There was a problem uploading the file'
 	return message, fn
+
+def upload_image(image, filename):
+	try:
+		f = open("img/" + filename, 'wb', 50000)
+		for chunk in file_buffer(image.file):
+			f.write(chunk)
+		f.close()
+		message = 'The image "' + filename + '" was uploaded successfully'
+	except:
+		message = 'There was a problem uploading the image'
+	return message
 
 def main():
 	# Get submitted form data
@@ -79,14 +90,14 @@ def main():
 	isbn = form.getfirst('isbn', 'none')
 	
 	# Create the fn and query variables
-	fn = ''
-	query = ''
+	fn = ''; query = '';
 	      
 	# Get the book from the form data
 	book = form['file']
+	image = form['image']
 	
 	if book.filename: # If the book exists
-		message, fn = upload_file(book)
+		book_message, book_fn = upload_book(book)
 		
 		# Open a new database connection
 		db = Database(
@@ -96,21 +107,23 @@ def main():
 			database="books"
 		)
 		
-		if fn.endswith(".pdf"): # If filename ends with pdf
+		if book_fn.endswith(".pdf"): # If filename ends with pdf
+			image_fn = book_fn.replace(".pdf", "") + ".jpg"
+			image_message = upload_image(image, image_fn)
 			# insert into the db
 			result = db.insert(dict(
-				title=title,  # strip the pdf from the end
-				filename=fn.replace(".pdf", ""),
-				author=author,
-				edition=edition,
-				publication_date=pub_date,
-				isbn=isbn
+				title = title,  
+				filename = book_fn.replace(".pdf", ""), # strip the pdf from the end
+				author = author,
+				edition = edition,
+				publication_date = pub_date,
+				isbn = isbn
 			))
 		
 			if result: # If query executed successfully redirect to success
 				print "Location: ./upload.php?success=1"
 			else: # otherwise redirect to error
-		   	print "Location: ./upload.php?err=0"
+		   		print "Location: ./upload.php?err=0"
 	else: # If the book doesn't exist redirect to error
 		print "Location: ./upload.php?err=1"
 	
