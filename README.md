@@ -1,7 +1,7 @@
 Upload.py
 =========
 
-This is a simple CGI script in Python that is used to connect to a MySQL database, and upload a PDF file the user specifies to the filesystem. It is used in conjunction with a HTML form, using POST to send information to the script to perform the upload and insert into the database.
+This is a simple CGI script written in Python 2.6 that is used to connect to a MySQL database, and upload a PDF file the user specifies to the filesystem. It is used in conjunction with a HTML form, using POST to send information to the script to perform the upload and insert into the database.
 
 The Form
 --------
