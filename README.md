@@ -6,7 +6,7 @@ This is a simple CGI script written in Python 2.6 that is used to connect to a S
 The Environment
 ---------------
 
-The application runs using Python 2.6, Apache (or another webserver using CGI and PHP), CGI (to execute the Python upload script), and PHP5 (for the form). To run the application, you must have the contents above in your public directory for your webserver, and navigate to the upload.php file. If your environment is properly set up, then you should be able to upload books using the form.
+The application runs using Python 2.6, Apache (or another webserver using CGI and PHP), CGI (to execute the Python upload script), SQLite3, and PHP5 (for the form). To run the application, you must have the contents above in your public directory for your webserver, and navigate to the upload.php file. If your environment is properly set up, then you should be able to upload books using the form.
 
 
 The Form
@@ -57,7 +57,7 @@ Ensure that you have Python 2.6 installed and the path to your Python executable
 ### Python script outputting as plain text
 
 Be sure that you are able to execute CGI scripts in this directory on the web server, or place the file in cgi-bin and adjust path names in the upload.php and upload.py files. To enable CGI execution in this directory (recommended), create an .htaccess file at the root of the directory with the upload.py file with the following content:
-<pre>AddHandler cgi-script .cgi .pl
+<pre>AddHandler cgi-script .cgi .py
 Options +ExecCGI</pre>
 
 ### Final Note
