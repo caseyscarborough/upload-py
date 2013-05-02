@@ -4,19 +4,11 @@
 	$book_directory = "files/documents/";
 	$image_directory = "files/images/";
 
-	$conn = mysql_connect("127.0.0.1", "root", "root");
-	if(!$conn) {
-		die("Could not connect to database: " . mysql_error());
-	}
-	
-	$db_select = mysql_select_db("books", $conn);
-	if(!$db_select) {
-		die("Could not select database: " . mysql_error());
-	}
+	$conn = new SQLite3('books.db');
 
 	$query = "SELECT * FROM `books` ";
 	$query .= "ORDER BY `id` ASC";
-	$book_set = mysql_query($query, $conn);
+	$book_set = $conn->query($query);
 
 	if(isset($_GET['success'])) {
 		if($_GET['success'] == 1) {
@@ -37,7 +29,7 @@
 		echo "<div class=\"span12 book\">";
 		echo "<table width=\"100%\" style=\"margin:0 auto; padding: 10px;\">";
 		echo "<tr style=\"font-weight:bold;\"><td>Title</td><td>Author</td><td>Edition</td><td>Pub. Date</td><td>ISBN-13</td></tr>";
-		while ($book = mysql_fetch_array($book_set)) {
+		while ($book = $book_set->fetchArray()) {
 			echo "<tr style=\"padding:5px;\"><td><a href=\"" . $book_directory . $book['filename'] . ".pdf\">" . $book['title'] . "</a></td>";
 			echo "<td>" . $book['author'] . "</td>";
 			echo "<td>" . $book['edition'] . "</td>";
@@ -49,8 +41,8 @@
 
 	function display_with_images($book_set){
 		global $book_directory, $image_directory;
-		while ($book = mysql_fetch_array($book_set)) {
-			echo "<br><div class=\"book-img\" style=\"float:left; clear:both; padding: 20px;\">";
+		while ($book = $book_set->fetchArray()) {
+			echo "<br><div class=\"book-img\" style=\"float:left; clear:both; padding: 20px 20px 10px 5px;\">";
 			echo "<a href=\"" . $book_directory . $book['filename'] . ".pdf\"><img src=\"" . $image_directory . $book['filename'] . ".jpg\" style=\"height:110px;width:auto;max-width:110px;\" class=\"book-img\"></a>";
 			echo "</div><div class=\"book-details\" style=\"margin-left:30px;\"><h4><a href=\"" . $book_directory . $book['filename'] . ".pdf\">" . $book['title'] . "</a></h4>";
 			echo "<p style=\"font-size:75%\">" . $book['author'] . "<br>Edition: " . $book['edition'] . "<br>Publication Date: " . $book['publication_date'] . "<br>ISBN-13: " . $book['isbn'] . "</p></div>";
@@ -91,8 +83,8 @@
 		</p>
 	</form>
 	<div id="book-list"><?php
-		display_list($book_set);
-		//display_with_images($book_set);
+		//display_list($book_set);
+		display_with_images($book_set);
 		?>
 	</div>
 </body>

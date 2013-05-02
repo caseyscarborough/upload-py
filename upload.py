@@ -4,10 +4,12 @@
     :platform: Unix
     :synopsis: 
 This is a simple CGI script written in Python 2.6 that 
-is used to connect to a MySQL database, and upload a PDF 
-file the user specifies to the filesystem. It is used in 
-conjunction with a HTML form, using POST to send information 
-to the script to perform the upload and insert into the database.
+is used to connect to a SQLite3 database, and upload a 
+PDF and JPG cover for a book the user specifies to the 
+filesystem. It is used in conjunction with a HTML form, 
+using POST to send information to the script to perform 
+the upload and insert into the database.
+
 
 .. moduleauthor:: Casey Scarborough <casey@caseyscarborough.com>
 
@@ -15,8 +17,9 @@ to the script to perform the upload and insert into the database.
 
 import cgi, os
 import cgitb; cgitb.enable()
-import MySQLdb
+import sqlite3
 
+database_filename = 'books.db'
 
 # These are the default locations for file uploads.
 book_upload_directory = "files/documents/"
@@ -24,29 +27,19 @@ image_upload_directory = "files/images/"
 upload_form_directory = "./"
 
 class Database:
-	'''Class that handles connections to the MySQL database.
+	'''Class that handles connections to the SQLite3 database.
 	It contains two methods, the constructor, and the insert method.
 
 	Attributes:
-		host (str): The hostname for the database.
-		user (str): The username for the database.
-		password (str): The password for the specified user.
-		database (str): The selected database.
+		filename (str): The filename for the database
+		table (str): The table name in the database
 	'''
 
 	def __init__(self, **kwargs):
-		self.host = kwargs.get('host')
-		self.user = kwargs.get('user')
-		self.password = kwargs.get('password')
-		self.database = kwargs.get('database')
-		
-		# Connect to the database
-		self._db = MySQLdb.connect(
-			host = self.host,
-			user = self.user,
-			passwd = self.password,
-			db = self.database
-		)
+		self.filename = kwargs.get('filename')
+		self.table = kwargs.get('table', 'test')
+		self._db = sqlite3.connect(self.filename)
+		self._db.row_factory = sqlite3.Row
 	
 	def insert(self, row):
 		'''This function handles insertion into the database.
@@ -57,13 +50,38 @@ class Database:
 		Returns:
 			result (str): The result of the function.
 		'''
-		query = "INSERT INTO books (title, filename, author, edition, publication_date, isbn) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (row['title'], row['filename'], row['author'], row['edition'], row['publication_date'], row['isbn'])
-		cur = self._db.cursor(); # Create a cursor
+		query = "insert into books (title, filename, author, edition, publication_date, isbn) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (row['title'], row['filename'], row['author'], row['edition'], row['publication_date'], row['isbn'])
 		try:
-			result = cur.execute(query) # Execute the query
+			result = self._db.execute(query) # Execute the query
+			self._db.commit()
 			return result # Return the result
-		except:
+		except Exception as e:
 			print "Location: " + upload_form_directory + "upload.php?err=2"
+			print e
+
+	@property
+	def filename(self): 
+		return self._filename
+
+	@filename.setter
+	def filename(self, fn):
+		self._filename = fn
+		self._db = sqlite3.connect(fn)
+		self._db.row_factory = sqlite3.Row
+
+	@filename.deleter
+	def filename(self): self.close()
+
+	@property
+	def table(self): return self._table
+	@table.setter
+	def table(self, t): self._table = t
+	@table.deleter
+	def table(self): self._table = 'test'
+
+	def close(self):
+		self._db.close()
+		del self._filename
 
 def file_buffer(f, chunk_size=50000):
 	'''This function is used as a buffer to read a file in chunks.
@@ -148,16 +166,12 @@ def main():
 		book_message, book_fn = upload_book(book)
 		image_message = ''
 		# Open a new database connection
-		db = Database(
-			host="localhost",
-			user="root",
-			password="root",
-			database="books"
-		)
+		db = Database(filename = database_filename, table = 'books')
 		
 		if book_fn.endswith(".pdf"): # If filename ends with pdf
 			image_fn = book_fn.replace(".pdf", "") + ".jpg"
-			image_message = upload_image(image, image_fn)
+			if image.filename:
+				image_message = upload_image(image, image_fn)
 			# insert into the db
 			result = db.insert(dict(
 				title = title,  
