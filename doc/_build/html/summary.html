@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; upload-py 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="upload-py 1.1.0 documentation" href="index.html" />
+    <link rel="next" title="Documentation for upload.py" href="code.html" />
+    <link rel="prev" title="Welcome to upload-py’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="Documentation for upload.py"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to upload-py’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">upload-py 1.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This is a simple CGI script written in Python 2.6 that is used to connect to a SQLite3 database, and upload a PDF and JPG cover for a book the user specifies to the filesystem. It is used in conjunction with a HTML form, using POST to send information to the script to perform the upload and insert into the database.</p>
+<div class="section" id="the-environment">
+<h2>The Environment<a class="headerlink" href="#the-environment" title="Permalink to this headline">¶</a></h2>
+<p>The application runs using Python 2.6, Apache (or another webserver using CGI and PHP), CGI (to execute the Python upload script), and PHP5 (for the form). To run the application, you must have the contents above in your public directory for your webserver, and navigate to the upload.php file. If your environment is properly set up, then you should be able to upload books using the form.</p>
+</div>
+<div class="section" id="the-form">
+<h2>The Form<a class="headerlink" href="#the-form" title="Permalink to this headline">¶</a></h2>
+<p>The form that I am using with the script follows this format:</p>
+<div class="highlight-python"><pre>&lt;form enctype="multipart/form-data" action="upload.py" method="post" id="form"&gt;
+        &lt;p&gt;
+                &lt;input type="text" name="title" placeholder="Title"&gt;&lt;br&gt;
+                &lt;input type="text" name="author" placeholder="Author"&gt;&lt;br&gt;
+                &lt;input type="text" name="edition" placeholder="Edition"&gt;&lt;br&gt;
+                &lt;input type="date" name="pub-date"&gt;&lt;br&gt;
+                &lt;input type="text" name="isbn" placeholder="ISBN-13"&gt;&lt;br&gt;
+        &lt;/p&gt;
+                Books must be uploaded in PDF Format.&lt;br&gt;
+                &lt;input type="file" name="file"&gt;&lt;br&gt;&lt;br&gt;
+                Images must be uploaded in JPG Format.&lt;br&gt;
+                &lt;input type="file" name="image"&gt;&lt;br&gt;&lt;br&gt;
+                &lt;input type="submit" value="Upload"&gt;
+        &lt;/p&gt;
+&lt;/form&gt;</pre>
+</div>
+</div>
+<div class="section" id="the-database">
+<h2>The Database<a class="headerlink" href="#the-database" title="Permalink to this headline">¶</a></h2>
+<p>The database is a SQLite3 database with a table containing seven columns: id, title, filename, author, edition, publication date, and isbn. The database file is included and is called books.db. If you&#8217;d like to create the database on your own, you can do so with the following python in the python shell:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">&amp;</span><span class="c">#39;books.db&amp;#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;create table books (id INTEGER PRIMARY KEY, title TEXT, filename TEXT, author TEXT, edition TEXT, publication_date DATE, isbn TEXT)&amp;#39&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">exit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="unable-to-execute-python-cgi-script-500-error">
+<h3>Unable to Execute Python CGI Script (500 Error)<a class="headerlink" href="#unable-to-execute-python-cgi-script-500-error" title="Permalink to this headline">¶</a></h3>
+<p>Ensure that the permissions on the upload.py file are set to 755.</p>
+<p>Ensure that you have Python 2.6 installed and the path to your Python executable in the first line of the upload.py file.</p>
+</div>
+<div class="section" id="python-script-outputting-as-plain-text">
+<h3>Python script outputting as plain text<a class="headerlink" href="#python-script-outputting-as-plain-text" title="Permalink to this headline">¶</a></h3>
+<p>Be sure that you are able to execute CGI scripts in this directory on the web server, or place the file in cgi-bin and adjust path names in the upload.php and upload.py files. To enable CGI execution in this directory (recommended), create an .htaccess file at the root of the directory with the upload.py file with the following content:</p>
+<div class="highlight-python"><pre>AddHandler cgi-script .cgi .pl
+Options +ExecCGI</pre>
+</div>
+</div>
+<div class="section" id="final-note">
+<h3>Final Note<a class="headerlink" href="#final-note" title="Permalink to this headline">¶</a></h3>
+<p>I&#8217;ve left cgitb enabled in the upload.py file for error reporting. This should help to describe any other errors. If you are having bigger problems, feel free to contact me at caseyscarborough[at]gmail[dot]com.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#the-environment">The Environment</a></li>
+<li><a class="reference internal" href="#the-form">The Form</a></li>
+<li><a class="reference internal" href="#the-database">The Database</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#unable-to-execute-python-cgi-script-500-error">Unable to Execute Python CGI Script (500 Error)</a></li>
+<li><a class="reference internal" href="#python-script-outputting-as-plain-text">Python script outputting as plain text</a></li>
+<li><a class="reference internal" href="#final-note">Final Note</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to upload-py&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code.html"
+                        title="next chapter">Documentation for upload.py</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/summary.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="Documentation for upload.py"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to upload-py’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">upload-py 1.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Casey Scarborough.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Documentation for upload.py &mdash; upload-py 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="upload-py 1.1.0 documentation" href="index.html" />
+    <link rel="prev" title="Introduction" href="summary.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="summary.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">upload-py 1.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-upload">
+<span id="documentation-for-upload-py"></span><h1>Documentation for upload.py<a class="headerlink" href="#module-upload" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-upload"></span><p>This is a simple CGI script written in Python 2.6 that 
+is used to connect to a SQLite3 database, and upload a 
+PDF and JPG cover for a book the user specifies to the 
+filesystem. It is used in conjunction with a HTML form, 
+using POST to send information to the script to perform 
+the upload and insert into the database.</p>
+<dl class="class">
+<dt id="upload.Database">
+<em class="property">class </em><tt class="descclassname">upload.</tt><tt class="descname">Database</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#upload.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that handles connections to the SQLite3 database.
+It contains two methods, the constructor, and the insert method.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>filename (str): The filename for the database
+table (str): The table name in the database</dd>
+</dl>
+<dl class="method">
+<dt id="upload.Database.insert">
+<tt class="descname">insert</tt><big>(</big><em>row</em><big>)</big><a class="headerlink" href="#upload.Database.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function handles insertion into the database.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>row (dict): The row to be inserted into the database.</dd>
+<dt>Returns:</dt>
+<dd>result (str): The result of the function.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="upload.file_buffer">
+<tt class="descclassname">upload.</tt><tt class="descname">file_buffer</tt><big>(</big><em>f</em>, <em>chunk_size=50000</em><big>)</big><a class="headerlink" href="#upload.file_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used as a buffer to read a file in chunks.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>f (file): The specified file.
+chunk_size (int): The size of the chunks. The default is 50000.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="upload.upload_book">
+<tt class="descclassname">upload.</tt><tt class="descname">upload_book</tt><big>(</big><em>book</em><big>)</big><a class="headerlink" href="#upload.upload_book" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function handles uploading the file for the module.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>book (file): The book file.</dd>
+<dt>Returns:</dt>
+<dd>message (str): The result of the function.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="upload.upload_image">
+<tt class="descclassname">upload.</tt><tt class="descname">upload_image</tt><big>(</big><em>image</em>, <em>filename</em><big>)</big><a class="headerlink" href="#upload.upload_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function handles uploading images for the module.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>image (file): The image file.
+filename (str): The name of the file to be uploaded.</dd>
+<dt>Returns:</dt>
+<dd>message (str): The result of the function.</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="summary.html"
+                        title="previous chapter">Introduction</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="summary.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">upload-py 1.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Casey Scarborough.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
