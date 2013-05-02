@@ -14,16 +14,21 @@ The Form
 
 The form that I am using with the script follows this format:
 ```html
-&lt;form enctype=&quot;multipart/form-data&quot; action=&quot;upload.py&quot; method=&quot;post&quot; id=&quot;form&quot;&gt;
-	&lt;input type=&quot;text&quot; name=&quot;title&quot; placeholder=&quot;Title&quot;&gt;
-	&lt;input type=&quot;text&quot; name=&quot;author&quot; placeholder=&quot;Author&quot;&gt;
-	&lt;input type=&quot;text&quot; name=&quot;edition&quot; placeholder=&quot;Edition&quot;&gt;
-	&lt;input type=&quot;date&quot; name=&quot;pub-date&quot;&gt;
-	&lt;input type=&quot;text&quot; name=&quot;isbn&quot; placeholder=&quot;ISBN-13&quot;&gt;
-	&lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;
-	&lt;input type=&quot;file&quot; name=&quot;image&quot;&gt;
-	&lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
-&lt;/form&gt;
+<form enctype="multipart/form-data" action="upload.py" method="post" id="form">
+	<p>
+		<input type="text" name="title" placeholder="Title"><br>
+		<input type="text" name="author" placeholder="Author"><br>
+		<input type="text" name="edition" placeholder="Edition"><br>
+		<input type="date" name="pub-date"><br>
+		<input type="text" name="isbn" placeholder="ISBN-13"><br>
+	</p>
+		Books must be uploaded in PDF Format.<br>
+		<input type="file" name="file"><br><br>
+		Images must be uploaded in JPG Format.<br>
+		<input type="file" name="image"><br><br>
+		<input type="submit" value="Upload">
+	</p>
+</form>
 ```
 
 
