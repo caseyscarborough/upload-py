@@ -103,7 +103,7 @@ def upload_book(book):
 
 	Returns:
 		message (str): The result of the function.'''
-
+	message = ''
 	try:
 		# Strip leading path from filename to avoid directory traversal attacks
 		fn = os.path.basename(book.filename)
@@ -116,10 +116,7 @@ def upload_book(book):
 			for chunk in file_buffer(book.file):
 				f.write(chunk)
 			f.close()
-	
 			message = 'The file "' + fn + '" was uploaded successfully'	
-		else:
-			message = 'Improper file format.'
 	except:
 		message = 'There was a problem uploading the file'
 	return message, fn
@@ -186,6 +183,8 @@ def main():
 				print "Location: " + upload_form_directory + "upload.php?success=1"
 			else: # otherwise redirect to error
 		   		print "Location: " + upload_form_directory + "upload.php?err=0"
+		else:
+			print "Location: " + upload_form_directory + "upload.php?err=3"
 	else: # If the book doesn't exist redirect to error
 		print "Location: " + upload_form_directory + "upload.php?err=1"
 	
