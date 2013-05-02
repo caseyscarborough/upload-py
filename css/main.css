@@ -1,0 +1,114 @@
+/*
+Custom CSS File Overwriting Defaults
+from the Twitter Bootstrap Framework
+*/
+
+
+
+body {
+	background-image: url(debut_dark.png);
+	background-attachment: fixed;
+	padding: 30px;
+}
+
+h1 {
+	font-size: 42px;
+}
+.img-polaroid {
+	-webkit-box-shadow: 0px 3px 5px #222;
+}
+
+pre, code {
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+	color: black;
+}
+
+.mainarticle {
+	background: white;
+	padding: 25px;
+  -webkit-box-shadow: 1px 1px 10px #333;
+  	  -moz-box-shadow: 1px 1px 10px #333;
+	  	    box-shadow: 1px 1px 10px #333;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	   	  border-radius: 5px;
+	text-align: center;
+}
+
+.mainarticle h2 {
+	font-size: 42px;
+}
+
+
+.book {
+	padding: 15px;
+}
+
+.book h3 {
+	line-height: 20px;
+}
+
+.book h4 {
+	line-height: 15px;
+}
+.book a {
+	-webkit-transition: color .5s;
+}
+
+.book a:hover {
+	text-decoration: none;
+	color: #3348a2;
+}
+
+#book-list {
+	margin:0 auto;
+	width: auto;
+}
+
+.books {
+	margin: 0 auto;
+	max-width: 400px;
+	min-width: 350px;
+}
+
+.book-img {
+	background-color: #fff;
+	margin-right: 25px;
+	width: 120px;
+	float: left;
+	border: 1px solid #bbb;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	padding: 4px;
+	margin-top: 5px;
+	transition: transition .5s;
+	-webkit-transition: -webkit-box-shadow .5s;
+	-moz-transition: -moz-box-shadow .5s;
+}
+
+.book-details {
+	text-align: left;
+	width: 300px;
+}
+
+.book-img:hover {
+	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+     -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.first_letter {
+	float: left;
+	font: 48px bold;
+	line-height: 40px;
+	padding-right: 10px;
+}
+
+.upload {
+	width:25px;
+	margin: 0 auto;
+	padding-left:80px;
+}
+
+#upload-form label.error {
+    color: #FB3A3A;
+}
