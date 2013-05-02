@@ -38,9 +38,9 @@ The Database
 The database is a SQLite3 database with a table containing seven columns: id, title, filename, author, edition, publication date, and isbn. The database file is included and is called books.db. If you'd like to create the database on your own, you can do so with the following python in the python shell:
 ```python
 >>> import sqlite3
->>> db = sqlite3.connect(&#39;books.db&#39;)
+>>> db = sqlite3.connect(books.db;)
 >>> cursor = db.cursor()
->>> cursor.execute(&#39;create table books (id INTEGER PRIMARY KEY, title TEXT, filename TEXT, author TEXT, edition TEXT, publication_date DATE, isbn TEXT)&#39;)
+>>> cursor.execute(create table books (id INTEGER PRIMARY KEY, title TEXT, filename TEXT, author TEXT, edition TEXT, publication_date DATE, isbn TEXT);)
 >>> db.commit()
 >>> exit()
 ```
