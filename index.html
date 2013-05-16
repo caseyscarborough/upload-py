@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Python PDF Uploader by caseyscarborough</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/caseyscarborough/upload-py">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/caseyscarborough/upload-py/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/caseyscarborough/upload-py/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Python PDF Uploader</h1>
+          <p>A small CGI script written in Python 2.6 for upload functionality for PDF files.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/caseyscarborough">caseyscarborough</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Introduction</h1>
+
+<p>This is a simple CGI script written in Python 2.6 that is used to connect to a SQLite3 database, and upload a PDF and JPG cover for a book the user specifies to the filesystem. It is used in conjunction with a HTML form, using POST to send information to the script to perform the upload and insert into the database.</p>
+
+<h2>The Environment</h2>
+
+<p>The application runs using Python 2.6, Apache (or another webserver using CGI and PHP), CGI (to execute the Python upload script), SQLite3, and PHP5 (for the form). To run the application, you must have the contents above in your public directory for your webserver, and navigate to the upload.php file. If your environment is properly set up, then you should be able to upload books using the form.</p>
+
+<h2>The Form</h2>
+
+<p>The form that I am using with the script follows this format:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;form</span> <span class="na">enctype=</span><span class="s">"multipart/form-data"</span> <span class="na">action=</span><span class="s">"upload.py"</span> <span class="na">method=</span><span class="s">"post"</span> <span class="na">id=</span><span class="s">"form"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"title"</span> <span class="na">placeholder=</span><span class="s">"Title"</span><span class="nt">&gt;&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"author"</span> <span class="na">placeholder=</span><span class="s">"Author"</span><span class="nt">&gt;&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"edition"</span> <span class="na">placeholder=</span><span class="s">"Edition"</span><span class="nt">&gt;&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"date"</span> <span class="na">name=</span><span class="s">"pub-date"</span><span class="nt">&gt;&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"isbn"</span> <span class="na">placeholder=</span><span class="s">"ISBN-13"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+        Books must be uploaded in PDF Format.<span class="nt">&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">name=</span><span class="s">"file"</span><span class="nt">&gt;&lt;br&gt;&lt;br&gt;</span>
+        Images must be uploaded in JPG Format.<span class="nt">&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">name=</span><span class="s">"image"</span><span class="nt">&gt;&lt;br&gt;&lt;br&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Upload"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
+
+<h2>The Database</h2>
+
+<p>The database is a SQLite3 database with a table containing seven columns: id, title, filename, author, edition, publication date, and isbn. The database file is included and is called books.db. If you'd like to create the database on your own, you can do so with the following python in the python shell:</p>
+
+<pre>&gt;&gt;&gt; import sqlite3
+&gt;&gt;&gt; db = sqlite3.connect('books.db')
+&gt;&gt;&gt; cursor = db.cursor()
+&gt;&gt;&gt; cursor.execute('create table books (id INTEGER PRIMARY KEY, title TEXT, filename TEXT, author TEXT, edition TEXT, publication_date DATE, isbn TEXT)')
+&gt;&gt;&gt; db.commit()
+&gt;&gt;&gt; exit()
+</pre>
+
+<h2>Troubleshooting</h2>
+
+<h3>Unable to Execute Python CGI Script (500 Error)</h3>
+
+<p>Ensure that the permissions on the upload.py file are set to 755.</p>
+
+<p>Ensure that you have Python 2.6 installed and the path to your Python executable in the first line of the upload.py file.</p>
+
+<h3>Python script outputting as plain text</h3>
+
+<p>Be sure that you are able to execute CGI scripts in this directory on the web server, or place the file in cgi-bin and adjust path names in the upload.php and upload.py files. To enable CGI execution in this directory (recommended), create an .htaccess file at the root of the directory with the upload.py file with the following content:</p>
+
+<pre>AddHandler cgi-script .cgi .py
+Options +ExecCGI</pre>
+
+<h3>Final Note</h3>
+
+<p>I've left cgitb enabled in the upload.py file for error reporting. This should help to describe any other errors. If you are having bigger problems, feel free to contact me at caseyscarborough[at]gmail[dot]com.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
